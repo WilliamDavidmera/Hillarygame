@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <title>Mensaje Secreto para Hillary</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Georgia', serif;
+            background: linear-gradient(135deg, #ffeef8 0%, #f8f3ff 50%, #fff0f5 100%);
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+            padding: 10px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 400px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            margin: env(safe-area-inset-top) auto env(safe-area-inset-bottom);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #5e2129 0%, #af888d 50%, #af888d 100%);
+            padding: 25px 20px;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Cpath d='M30 30c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20zm10 0c0-11.046-8.954-20-20-20s-20 8.954-20 20 8.954 20 20 20 20-8.954 20-20z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.3;
+        }
+
+        .monito {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            position: relative;
+            z-index: 1;
+            background: #8B4513;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            border: 2px solid rgba(255,255,255,0.3);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        }
+
+        .monito::before {
+            content: '🐵';
+        }
+
+        h1 {
+            font-size: 22px;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-container {
+            padding: 20px 15px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .word-display {
+            display: flex;
+            justify-content: center;
+            gap: 4px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .letter-box {
+            width: 28px;
+            height: 35px;
+            border: 2px solid rgba(94, 33, 41, 0.3);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 400;
+            background: rgba(255, 255, 255, 0.9);
+            transition: all 0.4s ease;
+            color: #999;
+            font-family: -apple-system, BlinkMacSystemFont, 'Georgia', serif;
+        }
+
+        .letter-box.revealed {
+            background: linear-gradient(135deg, #5e2129, #af888d);
+            color: white;
+            border-color: #5e2129;
+            transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(94, 33, 41, 0.3);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: rgba(94, 33, 41, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #5e2129, #af888d);
+            width: 0%;
+            transition: width 0.6s ease;
+            border-radius: 10px;
+        }
+
+        .content {
+            padding: 25px 20px;
+        }
+
+        .question-container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .question-card {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            padding: 25px 20px;
+            border: 1px solid rgba(94, 33, 41, 0.2);
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+        }
+
+        .question-title {
+            font-size: 18px;
+            font-weight: 400;
+            margin-bottom: 25px;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .option {
+            padding: 16px 20px;
+            border: 2px solid rgba(94, 33, 41, 0.3);
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.9);
+            font-size: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Georgia', serif;
+            color: #555;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .option:hover, .option:active {
+            border-color: #5e2129;
+            background: rgba(94, 33, 41, 0.1);
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(94, 33, 41, 0.2);
+        }
+
+        .option.correct {
+            border-color: #5e2129;
+            background: linear-gradient(135deg, #5e2129, #af888d);
+            color: white;
+            transform: scale(1.02);
+            box-shadow: 0 8px 20px rgba(94, 33, 41, 0.3);
+        }
+
+        .option.incorrect {
+            border-color: #ffb3b3;
+            background: rgba(255, 179, 179, 0.2);
+            color: #d63384;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        .question-counter {
+            text-align: center;
+            margin: 15px 0 25px 0;
+            font-size: 15px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .next-question-btn {
+            margin-top: 25px;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+
+        .next-question-btn.show {
+            opacity: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #5e2129, #af888d);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 300;
+            transition: all 0.3s ease;
+            margin: 20px auto;
+            font-family: -apple-system, BlinkMacSystemFont, 'Georgia', serif;
+            letter-spacing: 0.5px;
+            box-shadow: 0 6px 15px rgba(94, 33, 41, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            min-height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn:hover, .btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(94, 33, 41, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .monito-speech {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #5e2129;
+            font-style: italic;
+            color: #555;
+            line-height: 1.5;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            font-size: 15px;
+        }
+
+        .secret-message {
+            background: linear-gradient(135deg, #5e2129, #af888d);
+            color: white;
+            padding: 25px 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 12px 25px rgba(94, 33, 41, 0.3);
+        }
+
+        .restaurant-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(94, 33, 41, 0.2);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .restaurant-card:hover, .restaurant-card:active {
+            transform: translateY(-4px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+            border-color: #5e2129;
+        }
+
+        .restaurant-card.selected {
+            border-color: #5e2129;
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(94, 33, 41, 0.25);
+        }
+
+        .restaurant-image {
+            height: 120px;
+            background: linear-gradient(135deg, #5e2129, #af888d);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            color: white;
+        }
+
+        .restaurant-info {
+            padding: 20px;
+        }
+
+        .restaurant-name {
+            font-size: 20px;
+            font-weight: 300;
+            margin-bottom: 12px;
+            color: #333;
+            letter-spacing: 0.5px;
+        }
+
+        .restaurant-description {
+            color: #666;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .celebration {
+            font-size: 40px;
+            margin: 20px 0;
+        }
+
+        .final-screen, .message-screen {
+            text-align: center;
+            padding: 25px 20px;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translateY(0); }
+            40%, 43% { transform: translateY(-15px); }
+            70% { transform: translateY(-8px); }
+            90% { transform: translateY(-3px); }
+        }
+
+        .bounce {
+            animation: bounce 2s ease infinite;
+        }
+
+        /* Optimizaciones específicas para iPhone */
+        @media screen and (max-width: 414px) {
+            body {
+                padding: 5px;
+            }
+            
+            .container {
+                max-width: 100%;
+                border-radius: 20px;
+                margin: 0;
+            }
+            
+            .header {
+                padding: 20px 15px;
+            }
+            
+            h1 {
+                font-size: 20px;
+            }
+            
+            .progress-container {
+                padding: 15px 12px;
+            }
+            
+            .word-display {
+                gap: 3px;
+                margin: 15px 0;
+            }
+            
+            .letter-box {
+                width: 24px;
+                height: 30px;
+                font-size: 14px;
+            }
+            
+            .content {
+                padding: 20px 15px;
+            }
+            
+            .question-card {
+                padding: 20px 15px;
+            }
+            
+            .question-title {
+                font-size: 16px;
+                margin-bottom: 20px;
+            }
+            
+            .option {
+                padding: 14px 18px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+            
+            .monito-speech {
+                padding: 18px;
+                font-size: 14px;
+            }
+            
+            .secret-message {
+                padding: 20px 15px;
+                font-size: 15px;
+            }
+            
+            .restaurant-image {
+                height: 100px;
+                font-size: 35px;
+            }
+            
+            .restaurant-info {
+                padding: 18px;
+            }
+            
+            .restaurant-name {
+                font-size: 18px;
+            }
+            
+            .restaurant-description {
+                font-size: 13px;
+            }
+        }
+
+        /* Optimizaciones para iPhone SE y pantallas pequeñas */
+        @media screen and (max-width: 375px) {
+            .letter-box {
+                width: 22px;
+                height: 28px;
+                font-size: 12px;
+            }
+            
+            .word-display {
+                gap: 2px;
+            }
+            
+            .question-title {
+                font-size: 15px;
+            }
+            
+            .option {
+                font-size: 13px;
+                padding: 12px 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Pantalla de Inicio -->
+        <div id="start-screen">
+            <div class="header">
+                <div class="monito"></div>
+                <h1>¡Hola! Soy Monito 🐵</h1>
+            </div>
+            <div class="content">
+                <div class="monito-speech">
+                    <p>¡Hola Hillary! William me dejó un mensaje muy especial para ti, pero antes de dártelo necesito verificar que realmente eres tú.</p>
+                    <br>
+                    <p>Responde correctamente todas las preguntas y cada respuesta correcta revelará una letra del mensaje secreto. ¡Una vez que completes todas las preguntas podrás ver lo que William tiene preparado para ti!</p>
+                    <br>
+                    <p>¿Estás lista para comenzar? 🎉</p>
+                </div>
+                <div style="text-align: center;">
+                    <button class="btn" onclick="startGame()">¡Empezar el Juego!</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla del Juego -->
+        <div id="game-screen" class="hidden">
+            <div class="progress-container">
+                <div class="word-display" id="word-display">
+                    <div class="letter-box" data-letter="F">?</div>
+                    <div class="letter-box" data-letter="E">?</div>
+                    <div class="letter-box" data-letter="L">?</div>
+                    <div class="letter-box" data-letter="I">?</div>
+                    <div class="letter-box" data-letter="Z">?</div>
+                    <div class="letter-box" data-letter="C">?</div>
+                    <div class="letter-box" data-letter="U">?</div>
+                    <div class="letter-box" data-letter="M">?</div>
+                    <div class="letter-box" data-letter="P">?</div>
+                    <div class="letter-box" data-letter="L">?</div>
+                    <div class="letter-box" data-letter="E">?</div>
+                    <div class="letter-box" data-letter="A">?</div>
+                    <div class="letter-box" data-letter="ÑOS">?</div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <p style="text-align: center; color: #666;">
+                    <span id="completed-count">0</span>/13 preguntas completadas
+                </p>
+            </div>
+
+            <div class="content">
+                <div class="question-counter">
+                    <span>Pregunta <span id="current-question">1</span> de 13</span>
+                </div>
+                <div class="question-container" id="question-container">
+                    <!-- La pregunta actual se mostrará aquí -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla del Mensaje -->
+        <div id="message-screen" class="hidden">
+            <div class="header">
+                <div class="monito"></div>
+                <h1>¡Felicidades Hillary! 🎉</h1>
+            </div>
+            <div class="message-screen">
+                <div class="celebration bounce">🎂🎉🥳</div>
+                <div class="secret-message">
+                    <h2>Mensaje de William:</h2>
+                    <br>
+                    <p>Mi amor, espero que hayas disfrutado este pequeño juego tanto como yo disfruté creándolo para ti. Cada pregunta me recordó momentos especiales que hemos vivido juntos.</p>
+                    <br>
+                    <p>¡FELIZ CUMPLEAÑOS! 🎂✨</p>
+                    <br>
+                    <p>Eres la persona más especial en mi vida y quiero celebrar contigo de la mejor manera. Por eso, te tengo preparada una sorpresa especial...</p>
+                </div>
+                <button class="btn" onclick="showRewards()">Ver mi Sorpresa 🎁</button>
+            </div>
+        </div>
+
+        <!-- Pantalla de Recompensas -->
+        <div id="rewards-screen" class="hidden">
+            <div class="header">
+                <div class="monito"></div>
+                <h1>¡Tu Recompensa Especial! 🍽️</h1>
+            </div>
+            <div class="content">
+                <div class="monito-speech">
+                    <p>William quiere invitarte a cenar en el restaurante que tú elijas. ¡Escoge tu favorito y prepárate para una noche especial!</p>
+                </div>
+
+                <div class="restaurant-card" onclick="selectRestaurant('olivia')">
+                    <div class="restaurant-image">🍝</div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-name">Olivia</div>
+                        <div class="restaurant-description">
+                            Elegante restaurante italiano con auténticos sabores mediterráneos. Especializado en pastas artesanales, pizzas gourmet y vinos selectos. Ambiente romántico perfecto para una cena especial con vista a la ciudad.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" onclick="selectRestaurant('enzo')">
+                    <div class="restaurant-image">🍕</div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-name">Enzo</div>
+                        <div class="restaurant-description">
+                            Auténtica pizzería italiana con recetas tradicionales familiares. Masa fermentada naturalmente, ingredientes frescos importados y hornos de leña. Experiencia gastronómica casual pero sofisticada en un ambiente acogedor.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="restaurant-card" onclick="selectRestaurant('don-ernesto')">
+                    <div class="restaurant-image">🥩</div>
+                    <div class="restaurant-info">
+                        <div class="restaurant-name">Don Ernesto</div>
+                        <div class="restaurant-description">
+                            Parrilla argentina de primera categoría con cortes premium y parrillada tradicional. Carnes seleccionadas, vinos argentinos de excelente calidad y servicio excepcional. Ideal para los amantes de la buena carne.
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button class="btn" id="confirm-btn" onclick="confirmSelection()" disabled>
+                        Confirmar Selección
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pantalla Final -->
+        <div id="final-screen" class="hidden">
+            <div class="header">
+                <div class="monito"></div>
+                <h1>¡Perfecto! 🎉</h1>
+            </div>
+            <div class="final-screen">
+                <div class="celebration">🎂✨🥳✨🎂</div>
+                <h2>¡Tu elección ha sido registrada!</h2>
+                <div class="monito-speech">
+                    <p id="final-message">Has elegido <strong id="selected-restaurant-name"></strong> para tu cena especial.</p>
+                    <br>
+                    <p>William dice que por favor tomes una captura de pantalla de esta confirmación y se la envíes. ¡Él se encargará de hacer la reservación!</p>
+                    <br>
+                    <p>¡Que disfrutes muchísimo tu cumpleaños! 🎂🎉</p>
+                </div>
+                <div class="celebration bounce">🐵💕</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                question: "¿Si eres Hillary Camargo cómo pedirías el café?",
+                options: ["Con azúcar", "Sin azúcar"],
+                correct: 1,
+                letter: "F"
+            },
+            {
+                question: "¿En qué año nació Faustino?",
+                options: ["2024", "2025"],
+                correct: 1,
+                letter: "E"
+            },
+            {
+                question: "¿Cuál de las siguientes son tus pastas favoritas?",
+                options: ["Fettuccine", "Carbonara", "Ravioli"],
+                correct: 1,
+                letter: "L"
+            },
+            {
+                question: "¿Cuál de las siguientes películas verías una y otra vez?",
+                options: ["Legalmente rubia", "Como perder a un hombre en 10 días", "Ni idea"],
+                correct: [0, 1, 2], // Todas son correctas
+                letter: "I"
+            },
+            {
+                question: "¿Cuál es el nombre de nuestro segundo hijo?",
+                options: ["Faustino", "Monito", "Elefante"],
+                correct: 0,
+                letter: "Z"
+            },
+            {
+                question: "¿Qué es lo más importante para Hillary cuando va a salir?",
+                options: ["Uñas", "Pelo", "Maquillaje", "Ropa", "Zapatos", "Bolso", "Todas las anteriores"],
+                correct: 6,
+                letter: "C"
+            },
+            {
+                question: "¿Cómo se llamaba tu hijo perruno?",
+                options: ["Peluche", "Tobby", "Ying"],
+                correct: 0,
+                letter: "U"
+            },
+            {
+                question: "¿A qué lugar fuimos a comer en tu último cumpleaños?",
+                options: ["La villa", "Mimi", "Amalfi"],
+                correct: 1,
+                letter: "M"
+            },
+            {
+                question: "¿Qué pedimos de comer durante la cena de cumpleaños?",
+                options: ["Pastas", "Hamburguesas", "Pizza"],
+                correct: 2,
+                letter: "P"
+            },
+            {
+                question: "¿Qué forma tenía la pizza que pedimos en tu cumpleaños?",
+                options: ["Circular", "Corazón", "Cuadrada"],
+                correct: 1,
+                letter: "L"
+            },
+            {
+                question: "¿Qué día es el día de Hillary?",
+                options: ["14 de abril", "18 de septiembre", "19 de diciembre"],
+                correct: 0,
+                letter: "E"
+            },
+            {
+                question: "¿Cuál de las siguientes opciones elegiría Hillary para ejercitarse?",
+                options: ["Pilates", "Gimnasio"],
+                correct: 0,
+                letter: "ÑOS"
+            },
+            {
+                question: "¿Alguna vez hemos ido al circo?",
+                options: ["Falso", "Verdadero"],
+                correct: 1,
+                letter: "A"
+            }
+        ];
+
+        let completedQuestions = new Set();
+        let selectedRestaurant = '';
+        let currentQuestionIndex = 0;
+        let questionOrder = [];
+
+        function startGame() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+            
+            // Crear orden aleatorio de preguntas
+            questionOrder = Array.from({length: questions.length}, (_, i) => i);
+            questionOrder = shuffleArray(questionOrder);
+            
+            showCurrentQuestion();
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+
+        function showCurrentQuestion() {
+            if (currentQuestionIndex >= questions.length) {
+                showMessage();
+                return;
+            }
+
+            const questionIndex = questionOrder[currentQuestionIndex];
+            const question = questions[questionIndex];
+            const container = document.getElementById('question-container');
+
+            document.getElementById('current-question').textContent = currentQuestionIndex + 1;
+
+            const optionsHtml = question.options.map((option, optIndex) => 
+                `<div class="option" onclick="selectOption(${questionIndex}, ${optIndex})">${option}</div>`
+            ).join('');
+
+            container.innerHTML = `
+                <div class="question-card" id="current-question-card">
+                    <div class="question-title">${question.question}</div>
+                    <div class="options">
+                        ${optionsHtml}
+                    </div>
+                    <div class="next-question-btn">
+                        <button class="btn" onclick="nextQuestion()" id="next-btn">
+                            ${currentQuestionIndex === questions.length - 1 ? 'Ver Mensaje Secreto' : 'Siguiente Pregunta'}
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectOption(questionIndex, optionIndex) {
+            const question = questions[questionIndex];
+            const card = document.getElementById('current-question-card');
+            const options = card.querySelectorAll('.option');
+            const nextBtn = document.getElementById('next-btn');
+
+            // Limpiar estilos previos
+            options.forEach(opt => {
+                opt.classList.remove('correct', 'incorrect');
+                opt.style.pointerEvents = 'none'; // Deshabilitar clics después de responder
+            });
+
+            // Verificar si la respuesta es correcta
+            const isCorrect = Array.isArray(question.correct) 
+                ? question.correct.includes(optionIndex)
+                : optionIndex === question.correct;
+
+            if (isCorrect) {
+                options[optionIndex].classList.add('correct');
+                if (!completedQuestions.has(questionIndex)) {
+                    completedQuestions.add(questionIndex);
+                    revealLetter(question.letter);
+                    card.classList.add('completed');
+                    updateProgress();
+                    
+                    // Mostrar botón de siguiente pregunta
+                    setTimeout(() => {
+                        card.querySelector('.next-question-btn').classList.add('show');
+                    }, 500);
+                }
+            } else {
+                options[optionIndex].classList.add('incorrect');
+                setTimeout(() => {
+                    options[optionIndex].classList.remove('incorrect');
+                    // Reactivar clics para permitir reintentos
+                    options.forEach(opt => {
+                        opt.style.pointerEvents = 'auto';
+                    });
+                }, 1500);
+            }
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+            showCurrentQuestion();
+        }
+
+        function revealLetter(letter) {
+            const letterBoxes = document.querySelectorAll('.letter-box');
+            for (let box of letterBoxes) {
+                if (box.dataset.letter === letter && !box.classList.contains('revealed')) {
+                    box.textContent = letter;
+                    box.classList.add('revealed');
+                    break;
+                }
+            }
+        }
+
+        function updateProgress() {
+            const completed = completedQuestions.size;
+            const total = questions.length;
+            const percentage = (completed / total) * 100;
+
+            document.getElementById('progress-fill').style.width = `${percentage}%`;
+            document.getElementById('completed-count').textContent = completed;
+
+            if (completed === total) {
+                // Ya no necesitamos el setTimeout aquí porque se maneja en nextQuestion()
+            }
+        }
+
+        function showMessage() {
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('message-screen').classList.remove('hidden');
+        }
+
+        function showRewards() {
+            document.getElementById('message-screen').classList.add('hidden');
+            document.getElementById('rewards-screen').classList.remove('hidden');
+        }
+
+        function selectRestaurant(restaurant) {
+            // Remover selección previa
+            document.querySelectorAll('.restaurant-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            // Seleccionar nuevo restaurante
+            event.currentTarget.classList.add('selected');
+            selectedRestaurant = restaurant;
+            document.getElementById('confirm-btn').disabled = false;
+        }
+
+        function confirmSelection() {
+            if (!selectedRestaurant) return;
+
+            const restaurantNames = {
+                'olivia': 'Olivia',
+                'enzo': 'Enzo',
+                'don-ernesto': 'Don Ernesto'
+            };
+
+            document.getElementById('selected-restaurant-name').textContent = restaurantNames[selectedRestaurant];
+            document.getElementById('rewards-screen').classList.add('hidden');
+            document.getElementById('final-screen').classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
